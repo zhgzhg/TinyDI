@@ -1,6 +1,9 @@
 TinyDI
 ======
 
+[![Build Status](https://github.com/zhgzhg/TinyDI/actions/workflows/build.yml/badge.svg)](https://github.com/zhgzhg/TinyDI/actions/workflows/build.yml)
+[![Coverage](.github/badges/jacoco.svg)](https://github.com/zhgzhg/TinyDI/actions/workflows/build.yml)
+
 Minimalistic, annotation-based library for dependency injection. Compatible with the traditional JVM, Android, GraalVM, etc.
 
 Features

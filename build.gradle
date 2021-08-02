@@ -70,9 +70,36 @@ javadoc {
 }
 
 publishing {
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/zhgzhg/TinyDI")
+            credentials {
+                username = project.findProperty("gpr.user") ?: System.getenv("USERNAME")
+                password = project.findProperty("gpr.key") ?: System.getenv("TOKEN")
+            }
+        }
+    }
+
     publications {
         TinyDI(MavenPublication) {
-            from components.java
+            from(components.java)
+            pom {
+                licenses {
+                    license {
+                        name = 'The Apache License, Version 2.0'
+                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+                scm {
+                    connection = 'scm:git:git://github.com/zhgzhg/TinyDI.git'
+                    developerConnection = 'scm:git:ssh://github.com/zhgzhg/TinyDI.git'
+                    url = 'https://github.com/zhgzhg/TinyDI'
+                }
+            }
+        }
+        gpr(MavenPublication) {
+            from(components.java)
             pom {
                 licenses {
                     license {

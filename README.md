@@ -112,7 +112,8 @@ Limitations
 Further Reading
 ---------------
 
-More information can be found in the [Wiki](https://github.com/zhgzhg/TinyDI/wiki).
+More information can be found in the [Wiki](https://github.com/zhgzhg/TinyDI/wiki)
+and in the [API documentation](https://zhgzhg.github.io/TinyDI/).
 
     
 

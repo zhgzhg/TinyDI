@@ -242,7 +242,8 @@ public class TinyDI implements Runnable {
         /**
          * Configures wrapped {@link TinyDI} instance for the only purpose of producing static JSON result of the scanned class path and
          * the found elements suitable for DI. Can be used to gather the needed for DI information during the build time which can speed up
-         * the execution and allow TinyDI to work on environments with limited reflection capabilities like Android and GraalVM native images.
+         * the execution and allow TinyDI to work on environments with limited reflection capabilities like Android and GraalVM native
+         * images. See {@link com.github.zhgzhg.tinydi.build.BuildTimeScan} utility.
          * @return JSON string with the found elements of interest
          */
         public String configureForStaticScan() {

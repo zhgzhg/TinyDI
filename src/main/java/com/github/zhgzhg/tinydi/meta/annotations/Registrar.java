@@ -8,11 +8,15 @@ import java.lang.annotation.Target;
 
 /**
  * Indicates the classes providing {@link Recorded} components.
+ * Such classes are always singletons.
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface Registrar {
-    /** Specifies the name the annotated component will registered with. If not specified the simple class name will be used instead. */
+    /**
+     * The name the annotated component which will registered with. If not specified the simple class name will be used instead.
+     * @return Nonnull string with the component's name, or a blank one.
+     */
     String value() default "";
 }

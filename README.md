@@ -82,6 +82,7 @@ public class Main implements Entrypoint {
       .run();
   }
   
+  
   private Informer informer;
 
   public Main(Informer informer) {

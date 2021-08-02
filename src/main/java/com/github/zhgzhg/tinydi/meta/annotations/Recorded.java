@@ -15,9 +15,15 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface Recorded {
-    /** The name of the registered component. If not specified the simple class name will be used instead. */
+    /**
+     * The name of the registered component. If not specified the method name returning instance of the component will be used instead.
+     * @return Nonnull string of the component name which may be empty.
+     */
     String value() default "";
 
-    /** The instantiation approach to be used during injection. */
+    /**
+     * The instantiation approach to be used during injection.
+     * @return The specified instantiation strategy enum value, which by default is {@link ScopeDI#SINGLETON}.
+     */
     ScopeDI scope() default ScopeDI.SINGLETON;
 }

@@ -13,6 +13,9 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface KnownAs {
-    /** The exact name of the component to be injected. */
+    /**
+     * The exact name of the component to be injected.
+     * @return Nonnull string of the component name.
+     */
     String value();
 }

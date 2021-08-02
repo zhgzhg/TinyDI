@@ -65,8 +65,8 @@ jobs:
           release_name: TinyDI ${{ github.ref }}
           body: |
             ${{ steps.Changelog.outputs.changelog }}
-          draft: true
-          prerelease: true
+          draft: false
+          prerelease: false
 
       - name: Upload Documentation
         uses: JamesIves/github-pages-deploy-action@4.1.4

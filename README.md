@@ -74,7 +74,8 @@ class AppInfo implements Informer {
 /** The entrypoint of the Java app, and also in this example of the dependency injected app too. */
 @Supervised
 public class Main implements Entrypoint {
-  public void main(String[] args) {
+
+  public static void main(String[] args) {
     TinyDI.config()
       .basePackages(Main.class.getPackageName())
       .configure()
@@ -82,6 +83,7 @@ public class Main implements Entrypoint {
   }
   
   private Informer informer;
+
   public Main(Informer informer) {
     this.informer = informer;
   }
@@ -106,7 +108,7 @@ Limitations
 Further Reading
 ---------------
 
-More information can be found in the Wiki.
+More information can be found in the [Wiki](https://github.com/zhgzhg/TinyDI/wiki).
 
     
 

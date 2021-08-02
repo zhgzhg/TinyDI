@@ -65,6 +65,7 @@ public class TinyDynamicDI {
      * @throws IllegalArgumentException if <i>&lt;T&gt;</i> is not an interface
      * @throws NullPointerException if <i>toInstance</i> or <i>record</i> are null
      */
+    @SuppressWarnings("unchecked")
     public static <T> T attachRecordedAnnotation(@NonNull Supplier<Object> instanceSupplier, Class<?> instanceClass, @NonNull Recorded recorded) {
         Class<?>[] interfaces = instanceClass.getInterfaces();
         Class<?>[] recordInterfaces = recorded.getClass().getInterfaces();

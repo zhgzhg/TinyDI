@@ -601,6 +601,7 @@ public class TinyDI implements Runnable {
                 .collect(Collectors.toUnmodifiableList());
     }
 
+    @SuppressWarnings("unchecked")
     private static Object nestedSupplierResolver(Object supplier) {
         Object result = supplier;
         while (result instanceof Supplier) {

@@ -4,7 +4,7 @@ TinyDI
 [![Build Status](https://github.com/zhgzhg/TinyDI/actions/workflows/build.yml/badge.svg)](https://github.com/zhgzhg/TinyDI/actions/workflows/build.yml)
 [![Coverage](.github/badges/jacoco.svg)](https://github.com/zhgzhg/TinyDI/actions/workflows/build.yml)
 
-Minimalistic, annotation-based library for dependency injection. Compatible with the traditional JVM, Android, GraalVM, etc.
+Minimalistic, annotation-based Java library for dependency injection. Compatible with the traditional JVM, Android, GraalVM, etc.
 
 Features
 --------
@@ -17,8 +17,8 @@ Features
  * Runtime or build time component scanning, allowing DI on platforms with limited reflection capabilities (Android, GraalVM native images, etc.)
  * Simple to learn and use
 
-TinyDI Usage Example
---------------------
+TinyDI - Usage Example
+----------------------
 
 ```
 package tinydi.helloworld;
@@ -27,7 +27,6 @@ import com.github.zhgzhg.tinydi.TinyDI;
 import com.github.zhgzhg.tinydi.components.*;
 import com.github.zhgzhg.tinydi.meta.annotations.*;
 import com.github.zhgzhg.tinydi.meta.enums.ScopeDI;
-
 import java.util.Date;
 
 /** Component responsible for the initialization of other core for the app components. */
@@ -38,30 +37,29 @@ class Config {
   @Recorded
   String appVersion() { return "1.0.0"; }
   
-  /** A prototype component called 'currentTime' which is an instance of java.util.Date */
+  /** A prototype component called 'currentTime' */
   @Recorded(value = "currentTime", scope = ScopeDI.PROTOTYPE)
-  Date currTime() { return new Date(); }
+  Date currDate() { return new Date(); }
 }
+
 
 /** Interface contract for printing an app's version and current date */
 interface Informer {
   void printInfo();
 }
 
-/**
- * A component which will be injected with some 'recorded' component instances from above.
- * It can be also injected into other supervised components
- */
+/** A component which will be injected with the 'Recorded' component instances or possibly other 'Supervised' ones. */
 @Supervised
 class AppInfo implements Informer {
   private String version;
   private Date currDt;
   
   /**
-   * Constructor which will be called automatically by TinyDI. Its parameters are what's being injected.
-   * In case several parameters of the same data type exist the @KnownAs annotation can be used to specify a concrete one.
+   * Constructor which will be called automatically by TinyDI. If several eligible for injection
+   * parameters of the same data type exist the @KnownAs annotation can be used to specify a concrete one.
    * @param appVersion Will be injected, taken from the Config class.
-   * @param ct Will be injected, taken from the Config class. The KnownAs annotation is not mandatory in this example, but it's there for demonstration purposes. 
+   * @param ct Will be injected, taken from the Config class. The KnownAs annotation is not mandatory in
+   *           this example, but it's there for demonstration purposes. 
    */
   public AppInfo(String appVersion, @KnownAs("currentTime") Date ct) { 
     this.version = appVersion;
@@ -76,9 +74,10 @@ class AppInfo implements Informer {
 
 /** The entrypoint of the Java app, and also in this example of the dependency injected app too. */
 @Supervised
-public class Main implements Entrypoint {
+public class Main implements EntryPoint {
 
   public static void main(String[] args) {
+
     TinyDI.config()
       .basePackages(Main.class.getPackageName())
       .configure()
@@ -106,14 +105,15 @@ Limitations
 
 * Only dependency injection via constructor is supported
   * You may use Lombok to reduce the boilerplate code 
-* Primitive types are always converted to their wrappers
+* Primitive types are always converted to their wrappers (for e.g. int -> Integer, long -> Long, etc...)
 * Nulls are not considered as valid dependency injection values
+* Android and GraalVM native images require serialization of component scanning to be saved at build time 
 
 Further Reading
 ---------------
 
-More information can be found in the [Wiki](https://github.com/zhgzhg/TinyDI/wiki)
-and in the [API documentation](https://zhgzhg.github.io/TinyDI/).
+Consult with the [wiki](https://github.com/zhgzhg/TinyDI/wiki) and the [API documentation](https://zhgzhg.github.io/TinyDI/)
+for more information.
 
     
 

@@ -301,7 +301,6 @@ public class TinyDI implements Runnable {
     private TinyDI() {
         this.basePackages = new LinkedHashSet<>();
         this.ignoredBasePackages = new LinkedHashSet<>();
-        this.ignoredBasePackages.add(MetaBaseTinyDI.class.getPackageName());
         this.ignoredClasses = new LinkedHashSet<>();
         this.additionalRecords = new LinkedList<>();
         this.overridingClasspaths = new LinkedHashSet<>();

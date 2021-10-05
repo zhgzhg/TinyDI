@@ -13,8 +13,8 @@ import java.lang.annotation.Annotation;
 @AllArgsConstructor
 public class RecordedAnnotation implements Recorded {
 
-    private String value;
-    private ScopeDI scope;
+    private final String value;
+    private final ScopeDI scope;
 
     public RecordedAnnotation() {
         this.value = "";

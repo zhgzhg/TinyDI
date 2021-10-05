@@ -21,18 +21,21 @@ public class BuildTimeScan implements Consumer<String[]> {
     static String BASE_PKG = "-bp";
     static String BASE_PKG_IGNORED = "-ibp";
     static String CLASS_IGNORED = "-ic";
+    static String OVERRIDING_CLASSPATH = "-oc";
 
     String outFile = "tinydi-scanresult.json";
     String outDir;
     Set<String> basePackages = new LinkedHashSet<>();
     Set<String> ignoredBasePackages = new LinkedHashSet<>();
     Set<String> ignoredClasses = new LinkedHashSet<>();
+    Set<String> overridingClasspaths = new LinkedHashSet<>();
 
     private static void printHelp() {
         System.out.println("Build Time Scanner - a DI helper utility");
         System.out.println();
         System.out.println("Format:");
         System.out.println("  -od<output_directory> -bp<fqdn_base_package>");
+        System.out.println("  [-oc<overriding_fqdn_classpath>]...");
         System.out.println("  [-ibp<fqdn_base_package_to_ignore>] [-ic<fqdn_class_to_ignore>]");
         System.out.println("  [-of<output_file_name>]");
         System.out.println();
@@ -56,6 +59,8 @@ public class BuildTimeScan implements Consumer<String[]> {
                 ignoredBasePackages.add(arg.substring(BASE_PKG_IGNORED.length()));
             } else if (arg.startsWith(CLASS_IGNORED)) {
                 ignoredClasses.add(arg.substring(CLASS_IGNORED.length()));
+            } else if (arg.startsWith(OVERRIDING_CLASSPATH)) {
+                overridingClasspaths.add(arg.substring(OVERRIDING_CLASSPATH.length()));
             }
         }
 
@@ -76,6 +81,7 @@ public class BuildTimeScan implements Consumer<String[]> {
                 .basePackages(this.basePackages.toArray(new String[0]))
                 .ignoredBasePackages(this.ignoredBasePackages.toArray(new String[0]))
                 .ignoredClasses(this.ignoredClasses.toArray(new String[0]))
+                .overrideClasspath(this.overridingClasspaths.toArray(new String[0]))
                 .configureForStaticScan();
 
         try (PrintWriter writer = new PrintWriter(jsonFile)) {

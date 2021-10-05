@@ -76,6 +76,7 @@ public class TinyDI implements Runnable {
     private final Set<String> ignoredBasePackages;
     private final Set<String> ignoredClasses;
     private final List<Recorded> additionalRecords;
+    private final Set<String> overridingClasspaths;
     private String staticClasspathScan;
 
 
@@ -151,6 +152,7 @@ public class TinyDI implements Runnable {
             checkLock();
 
             if (records != null) {
+                tinyDI.additionalRecords.clear();
                 Collections.addAll(tinyDI.additionalRecords, records);
             }
 
@@ -171,6 +173,7 @@ public class TinyDI implements Runnable {
             }
 
             if (basePackages != null) {
+                tinyDI.basePackages.clear();
                 Collections.addAll(tinyDI.basePackages, basePackages);
             }
 
@@ -187,6 +190,7 @@ public class TinyDI implements Runnable {
             checkLock();
 
             if (ignoredBasePackages != null) {
+                tinyDI.ignoredBasePackages.clear();
                 Collections.addAll(tinyDI.ignoredBasePackages, ignoredBasePackages);
             }
 
@@ -203,7 +207,26 @@ public class TinyDI implements Runnable {
             checkLock();
 
             if (ignoredClasses != null) {
+                tinyDI.ignoredClasses.clear();
                 Collections.addAll(tinyDI.ignoredClasses, ignoredClasses);
+            }
+
+            return this;
+        }
+
+        /**
+         * Specifies 1 or more fully-qualified classpaths to be used during recursive scanning. They override the automatically detected
+         * classpath. The module path won't be scanned in this case.
+         * @param overridingClasspaths One or more fully-qualified class names.
+         * @return The belonging instance for fluent config.
+         * @throws IllegalArgumentException If {@link #configure()} has been called previously.
+         */
+        public Config overrideClasspath(String... overridingClasspaths) {
+            checkLock();
+
+            if (overridingClasspaths != null) {
+                tinyDI.overridingClasspaths.clear();
+                Collections.addAll(tinyDI.overridingClasspaths, overridingClasspaths);
             }
 
             return this;
@@ -268,6 +291,7 @@ public class TinyDI implements Runnable {
         this.ignoredBasePackages.add(MetaBaseTinyDI.class.getPackageName());
         this.ignoredClasses = new LinkedHashSet<>();
         this.additionalRecords = new LinkedList<>();
+        this.overridingClasspaths = new LinkedHashSet<>();
         registry.put(this.getClass().getSimpleName(), this.getClass());
         instances.put(this.getClass().getSimpleName(), this);
     }
@@ -294,12 +318,17 @@ public class TinyDI implements Runnable {
     }
 
     private ScanResult initiateNewScan() {
-        return new ClassGraph()
+        ClassGraph classGraph = new ClassGraph()
                 .rejectPackages(this.ignoredBasePackages.toArray(new String[0]))
                 .rejectClasses(this.ignoredClasses.toArray(new String[0]))
                 .acceptPackages(this.basePackages.toArray(new String[0]))
-                .enableAllInfo()
-                .scan();
+                .enableAllInfo();
+
+        if (!this.overridingClasspaths.isEmpty()) {
+            classGraph = classGraph.overrideClasspath(overridingClasspaths);
+        }
+
+        return classGraph.scan();
     }
 
     @SneakyThrows

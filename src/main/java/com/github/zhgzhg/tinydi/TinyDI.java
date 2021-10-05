@@ -78,7 +78,7 @@ public class TinyDI implements Runnable {
     private final List<Recorded> additionalRecords;
     private final Set<String> overridingClasspaths;
     private String staticClasspathScan;
-
+    private boolean aggressiveEncapsulationCircumventing;
 
     /**
      * TinyDI's configuration helper.
@@ -217,7 +217,7 @@ public class TinyDI implements Runnable {
         /**
          * Specifies 1 or more fully-qualified classpaths to be used during recursive scanning. They override the automatically detected
          * classpath. The module path won't be scanned in this case.
-         * @param overridingClasspaths One or more fully-qualified class names.
+         * @param overridingClasspaths One or more fully-qualified class paths.
          * @return The belonging instance for fluent config.
          * @throws IllegalArgumentException If {@link #configure()} has been called previously.
          */
@@ -244,6 +244,19 @@ public class TinyDI implements Runnable {
             checkLock();
             this.tinyDI.instances.putIfAbsent(Environment.class.getSimpleName(), new Environment(args, environmentVars, envProps));
             this.tinyDI.registry.putIfAbsent(Environment.class.getSimpleName(), Environment.class);
+            return this;
+        }
+
+        /**
+         * Activates more aggressive encapsulation circumventing for Java version 16 or later. The hack relies on additional library which
+         * must be manually added as a dependency - the @see <a href="https://github.com/toolfactory/narcissus">Narcissus</a>.
+         * @param useEncapsulationCircumventing Set to true to activate the aggressive hack, and use false to deactivate it
+         * @return The belonging instance for fluent config.
+         * @throws IllegalArgumentException If {@link #configure()} has been called previously.
+         */
+        public Config aggressiveEncapsulationCircumventing(boolean useEncapsulationCircumventing) {
+            checkLock();
+            this.tinyDI.aggressiveEncapsulationCircumventing = useEncapsulationCircumventing;
             return this;
         }
 
@@ -292,6 +305,7 @@ public class TinyDI implements Runnable {
         this.ignoredClasses = new LinkedHashSet<>();
         this.additionalRecords = new LinkedList<>();
         this.overridingClasspaths = new LinkedHashSet<>();
+        this.aggressiveEncapsulationCircumventing = false;
         registry.put(this.getClass().getSimpleName(), this.getClass());
         instances.put(this.getClass().getSimpleName(), this);
     }
@@ -318,6 +332,8 @@ public class TinyDI implements Runnable {
     }
 
     private ScanResult initiateNewScan() {
+        ClassGraph.CIRCUMVENT_ENCAPSULATION = aggressiveEncapsulationCircumventing;
+
         ClassGraph classGraph = new ClassGraph()
                 .rejectPackages(this.ignoredBasePackages.toArray(new String[0]))
                 .rejectClasses(this.ignoredClasses.toArray(new String[0]))

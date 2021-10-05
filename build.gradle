@@ -5,7 +5,7 @@ plugins {
 }
 
 group 'com.github.zhgzhg.tinydi'
-version '0.1.0'
+version '0.2.0'
 
 repositories {
     mavenCentral()
@@ -41,6 +41,11 @@ jacocoTestReport {
     dependsOn test
     reports {
         csv.enabled true
+    }
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: 'com/github/zhgzhg/tinydi/build/**')
+        }))
     }
 }
 

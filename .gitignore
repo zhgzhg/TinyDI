@@ -53,5 +53,5 @@ gradle-app.setting
 # gradle/wrapper/gradle-wrapper.properties
 
 ### Gradle Patch ###
-**/build/
-!/lib/src/main/java/com/github/zhgzhg/tinydi/build/**
+**/build
+!/lib/src/main/java/com/github/zhgzhg/tinydi/build/

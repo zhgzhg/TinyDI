@@ -3,7 +3,6 @@ package com.github.zhgzhg.tinydi;
 import com.github.zhgzhg.tinydi.components.EntryPoint;
 import com.github.zhgzhg.tinydi.components.Environment;
 import com.github.zhgzhg.tinydi.dynamic.TinyDynamicDI;
-import com.github.zhgzhg.tinydi.meta.MetaBaseTinyDI;
 import com.github.zhgzhg.tinydi.meta.annotations.KnownAs;
 import com.github.zhgzhg.tinydi.meta.annotations.Recorded;
 import com.github.zhgzhg.tinydi.meta.annotations.Registrar;

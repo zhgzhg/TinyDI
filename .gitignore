@@ -39,7 +39,6 @@ hs_err_pid*
 ### Gradle ###
 .gradle
 /build/
-!/src/main/java/com/github/zhgzhg/tinydi/build/**
 
 # Ignore Gradle GUI config
 gradle-app.setting
@@ -55,3 +54,4 @@ gradle-app.setting
 
 ### Gradle Patch ###
 **/build/
+!/lib/src/main/java/com/github/zhgzhg/tinydi/build/**

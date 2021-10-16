@@ -1,0 +1,100 @@
+plugins {
+    id 'java-library'
+    id 'jacoco'
+    id 'maven-publish'
+}
+
+group rootProject.group
+version rootProject.version
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+}
+
+dependencies {
+    compileOnly 'org.projectlombok:lombok:1.18.20'
+    annotationProcessor 'org.projectlombok:lombok:1.18.20'
+    testCompileOnly 'org.projectlombok:lombok:1.18.20'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.20'
+
+    implementation 'io.github.classgraph:classgraph:4.8.123'
+
+    testImplementation(platform('org.junit:junit-bom:5.8.1'))
+    testImplementation('org.junit.jupiter:junit-jupiter')
+}
+
+test {
+    useJUnitPlatform()
+    finalizedBy jacocoTestReport // report is always generated after tests run
+}
+
+jacocoTestReport {
+    dependsOn test
+    reports {
+        csv.enabled true
+    }
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: 'com/github/zhgzhg/tinydi/build/**')
+        }))
+    }
+}
+
+jacoco {
+    toolVersion = "0.8.7"
+}
+
+tasks.named('jar') {
+    manifest {
+        attributes(
+                'Implementation-Title': project.group + '.' + project.name,
+                'Implementation-Version': project.version,
+                'Automatic-Module-Name': project.group + '.' + project.name
+        )
+    }
+}
+
+java {
+    withSourcesJar()
+    withJavadocJar()
+}
+
+javadoc {
+    if (JavaVersion.current().isJava9Compatible()) {
+        options.addBooleanOption('html5', true)
+    }
+}
+
+publishing {
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/zhgzhg/TinyDI")
+            credentials {
+                username = project.findProperty("gpr.user") ?: System.getenv("USERNAME")
+                password = project.findProperty("gpr.key") ?: System.getenv("TOKEN")
+            }
+        }
+    }
+
+    publications {
+        TinyDI(MavenPublication) {
+            from(components.java)
+            artifactId 'tinydi'
+            pom {
+                licenses {
+                    license {
+                        name = 'The Apache License, Version 2.0'
+                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+                scm {
+                    connection = 'scm:git:git://github.com/zhgzhg/TinyDI.git'
+                    developerConnection = 'scm:git:ssh://github.com/zhgzhg/TinyDI.git'
+                    url = 'https://github.com/zhgzhg/TinyDI'
+                }
+            }
+        }
+    }
+}

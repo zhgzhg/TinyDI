@@ -1,2 +1,6 @@
-rootProject.name = 'TinyDI'
+rootProject.name = 'TinyDI-Parent'
+include ('lib', 'android-json-scan-appender-plugin')
+
+project(':lib').name = 'tinydi'
+
 

@@ -330,7 +330,21 @@ public class TinyDI implements Runnable {
     }
 
     private ScanResult initiateNewScan() {
-        ClassGraph.CIRCUMVENT_ENCAPSULATION = aggressiveEncapsulationCircumventing;
+        if (aggressiveEncapsulationCircumventing) {
+            try {
+                Class.forName("io.github.toolfactory.narcissus", false, this.getClass().getClassLoader());
+                ClassGraph.CIRCUMVENT_ENCAPSULATION = ClassGraph.CircumventEncapsulationMethod.NARCISSUS;
+            } catch (ClassNotFoundException narcissusMissing) {
+                try {
+                    Class.forName("io.github.toolfactory.jvm.Driver", false, this.getClass().getClassLoader());
+                    ClassGraph.CIRCUMVENT_ENCAPSULATION = ClassGraph.CircumventEncapsulationMethod.JVM_DRIVER;
+                } catch (ClassNotFoundException jvmDriverMissing) {
+                    throw new IllegalStateException("Aggressive encapsulation circumventing is not possible, becase neither Narcissus nor JVM Driver libraries have been found on the classpath");
+                }
+            }
+        } else {
+            ClassGraph.CIRCUMVENT_ENCAPSULATION = ClassGraph.CircumventEncapsulationMethod.NONE;
+        }
 
         ClassGraph classGraph = new ClassGraph()
                 .rejectPackages(this.ignoredBasePackages.toArray(new String[0]))

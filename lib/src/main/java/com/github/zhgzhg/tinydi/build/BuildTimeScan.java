@@ -89,6 +89,10 @@ public class BuildTimeScan implements Consumer<String[]> {
         }
     }
 
+    /**
+     * The entry point of the BuildTimeScan utility.
+     * @param args The command line arguments used to customize the classpath scanning process.
+     */
     public static void main(String[] args) {
         new BuildTimeScan().accept(args);
     }

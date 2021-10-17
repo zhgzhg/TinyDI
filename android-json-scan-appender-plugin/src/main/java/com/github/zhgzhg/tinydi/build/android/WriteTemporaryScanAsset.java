@@ -12,6 +12,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Helper action executing the actual classpath scanning, JSON file as an asset writing, and possibly cleaning it afterwards.
+ */
 @RequiredArgsConstructor
 public class WriteTemporaryScanAsset implements Action<Task> {
 

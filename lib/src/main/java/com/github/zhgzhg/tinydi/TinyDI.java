@@ -308,6 +308,10 @@ public class TinyDI implements Runnable {
         instances.put(this.getClass().getSimpleName(), this);
     }
 
+    /**
+     * Registers the passed @Recorded instances. Useful for programmatic DI.
+     * @param additionalRecords List of instances to be registered as participants in the DI process.
+     */
     protected void registerProxiedRecords(List<Recorded> additionalRecords) {
         if (additionalRecords.isEmpty()) {
             return;
@@ -667,6 +671,11 @@ public class TinyDI implements Runnable {
         return TinyDynamicDI.realInstance(result);
     }
 
+    /**
+     * Returns a Constructor instace, that's been loaded with this component's class loader.
+     * @param ctor The original Constructor instance to reload
+     * @return A reloaded with the current class loader Constructor instance.
+     */
     @SneakyThrows
     protected Constructor<?> constructorWithLocalClassLoader(Constructor<?> ctor) {
         Class<?> myClass = this.reloadWithLocalClassLoader(ctor.getDeclaringClass());
@@ -674,6 +683,11 @@ public class TinyDI implements Runnable {
         return myClass.getDeclaredConstructor(parameters);
     }
 
+    /**
+     * Returns a Method instace, that's been loaded with this component's class loader.
+     * @param method The original Method instance to reload
+     * @return A reloaded with the current class loader Method instance.
+     */
     @SneakyThrows
     protected Method methodWithLocalClassLoader(Method method) {
         Class<?> myClass = this.reloadWithLocalClassLoader(method.getDeclaringClass());
@@ -681,6 +695,11 @@ public class TinyDI implements Runnable {
         return myClass.getDeclaredMethod(method.getName(), parameters);
     }
 
+    /**
+     * Returns a Class instace, that's been loaded with this component's class loader.
+     * @param foreignClass The original Class instance to reload
+     * @return A reloaded with the current class loader Class instance.
+     */
     @SneakyThrows
     protected Class<?> reloadWithLocalClassLoader(Class<?> foreignClass) {
         ClassLoader myClassLoader = this.getClass().getClassLoader();

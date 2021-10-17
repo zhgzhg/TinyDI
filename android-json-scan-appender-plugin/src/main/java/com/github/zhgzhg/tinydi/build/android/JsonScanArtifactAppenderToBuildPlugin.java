@@ -10,21 +10,53 @@ import org.gradle.api.tasks.compile.JavaCompile;
 
 import java.util.Objects;
 
+/**
+ * A Gradle helper plugin working with along with the Android Gradle Plugin to produce a static scan JSON asset during compile time.
+ */
 public class JsonScanArtifactAppenderToBuildPlugin implements Plugin<Project> {
 
+    /**
+     * Android JSON Scan Appender's Plugin configuration holder.
+     */
     public static abstract class JsonScanArtifactAppenderToBuildPluginExtension {
+        /**
+         * Returns the current scanArgs option.
+         * @return String array of scanArgs to be used.
+         */
         public abstract Property<String[]> getScanArgs();
+
+        /**
+         * Returns the current buildTargers option.
+         * @return String array of buildTargets to be used.
+         */
         public abstract Property<String[]> getBuildTargets();
+
+        /**
+         * Returns the current flag for the cleanProducedAssets option.
+         * @return Boolean value indicating whether the produced assets shall be cleaned. Usually that's preferred by default.
+         */
         public abstract Property<Boolean> getCleanProducedAssets();
 
+        /**
+         * Executes the setter of the scan args config String array customizing the static classpath scan process.
+         * @param action The actuall setter that will be executed.
+         */
         public void scanArgs(Action<Property<String[]>> action) {
             action.execute(getScanArgs());
         }
 
+        /**
+         * Executes the setter of the build targets for which a scan will be run. Typically Debug, and Release.
+         * @param action The actuall setter that will be executed.
+         */
         public void buildTargets(Action<Property<String[]>> action) {
             action.execute(getBuildTargets());
         }
 
+        /**
+         * Executes the setter of the flag indicating whether to automatically clean the produced assets when the compilation process is finished.
+         * @param action The actuall setter that will be executed.
+         */
         public void cleanProducedAssets(Action<Property<Boolean>> action) {
             action.execute(getCleanProducedAssets());
         }
@@ -35,6 +67,7 @@ public class JsonScanArtifactAppenderToBuildPlugin implements Plugin<Project> {
         }
     }
 
+    @Override
     public void apply(Project project) {
         JsonScanArtifactAppenderToBuildPluginExtension options = project.getExtensions()
                 .create("tinidiStaticJsonScanForAndroid", JsonScanArtifactAppenderToBuildPluginExtension.class);

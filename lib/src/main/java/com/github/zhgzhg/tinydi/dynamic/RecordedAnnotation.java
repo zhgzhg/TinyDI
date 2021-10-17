@@ -16,6 +16,10 @@ public class RecordedAnnotation implements Recorded {
     private final String value;
     private final ScopeDI scope;
 
+    /**
+     * Default constructor of the pseudo @Recorded annotation instance, setting the component name to empty string,
+     * and its scope to singeton.
+     */
     public RecordedAnnotation() {
         this.value = "";
         this.scope = ScopeDI.SINGLETON;

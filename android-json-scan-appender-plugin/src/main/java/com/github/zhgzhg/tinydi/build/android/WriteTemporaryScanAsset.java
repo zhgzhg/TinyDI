@@ -7,9 +7,9 @@ import org.gradle.api.Action;
 import org.gradle.api.Task;
 
 import java.io.File;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Objects;
 
 /**
@@ -19,19 +19,20 @@ import java.util.Objects;
 public class WriteTemporaryScanAsset implements Action<Task> {
 
     private final MergeSourceSetFolders mergeSourceSetFolders;
-    private final String[] scanArgs;
+    private final List<String> scanArgs;
     private final boolean cleanProducedAssets;
     private final Task latePostexecTaskToHookAfter;
 
-    private String computeScanFileName(String[] args) {
+    private String computeScanFileName(List<String> args) {
         String outputFile = "tinydi-scanresult.json";
-        if (args == null || args.length == 0) {
+        if (args == null || args.isEmpty()) {
             return outputFile;
         }
 
-        for (int i = args.length - 1; i > -1; --i) {
-            if (args[i].startsWith("-of")) {
-                outputFile = args[i].substring(3);
+        for (ListIterator<String> it = args.listIterator(); it.hasPrevious(); ) {
+            String arg = it.previous();
+            if (arg.startsWith("-of")) {
+                outputFile = arg.substring(3);
                 break;
             }
         }
@@ -71,7 +72,7 @@ public class WriteTemporaryScanAsset implements Action<Task> {
         File forDeletingDirectory = extractFirstDirChild(realBase, assetDirectory);
 
         if (cleanProducedAssets) {
-            if (!forDeletingDirectory.exists()) {
+            if (forDeletingDirectory != null && !forDeletingDirectory.exists()) {
                 latePostexecTaskToHookAfter.doLast(s -> {
                     System.out.println("Removing TinyDI's temp assets...");
                     staticScanLocation.delete();
@@ -89,7 +90,7 @@ public class WriteTemporaryScanAsset implements Action<Task> {
         List<String> cliArgs = new LinkedList<>();
         cliArgs.add("-od" + assetDirectory.getAbsolutePath());
         cliArgs.add("-oc" + assetDirectory.getAbsolutePath());
-        cliArgs.addAll(Arrays.asList(this.scanArgs));
+        cliArgs.addAll(this.scanArgs);
 
         BuildTimeScan.main(cliArgs.toArray(new String[0]));
     }

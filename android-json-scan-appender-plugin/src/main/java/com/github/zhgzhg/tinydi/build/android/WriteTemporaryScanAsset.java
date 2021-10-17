@@ -5,6 +5,7 @@ import com.github.zhgzhg.tinydi.build.BuildTimeScan;
 import lombok.RequiredArgsConstructor;
 import org.gradle.api.Action;
 import org.gradle.api.Task;
+import org.gradle.api.tasks.compile.JavaCompile;
 
 import java.io.File;
 import java.util.LinkedList;
@@ -89,7 +90,7 @@ public class WriteTemporaryScanAsset implements Action<Task> {
 
         List<String> cliArgs = new LinkedList<>();
         cliArgs.add("-od" + assetDirectory.getAbsolutePath());
-        cliArgs.add("-oc" + assetDirectory.getAbsolutePath());
+        cliArgs.add("-oc" + ((JavaCompile) task).getDestinationDirectory().get().getAsFile().getAbsolutePath());
         cliArgs.addAll(this.scanArgs);
 
         BuildTimeScan.main(cliArgs.toArray(new String[0]));

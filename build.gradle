@@ -7,6 +7,10 @@ repositories {
 }
 
 allprojects {
+    tasks.withType(JavaCompile) {
+        sourceCompatibility = '11'
+        targetCompatibility = '11'
+    }
     gradle.projectsEvaluated {
         tasks.withType(JavaCompile) {
             options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"

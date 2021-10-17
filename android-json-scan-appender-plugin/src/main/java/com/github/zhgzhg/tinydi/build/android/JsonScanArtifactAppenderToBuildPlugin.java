@@ -5,6 +5,7 @@ import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
+import org.gradle.api.provider.ListProperty;
 import org.gradle.api.provider.Property;
 import org.gradle.api.tasks.compile.JavaCompile;
 
@@ -15,15 +16,17 @@ import java.util.Objects;
  */
 public class JsonScanArtifactAppenderToBuildPlugin implements Plugin<Project> {
 
+    static final String TINYDI_CFG_HASH = "tinydiCfgHash";
+
     /**
      * Android JSON Scan Appender's Plugin configuration holder.
      */
-    public static abstract class JsonScanArtifactAppenderToBuildPluginExtension {
+    public abstract static class JsonScanArtifactAppenderToBuildPluginExtension {
         /**
          * Returns the current scanArgs option.
          * @return String array of scanArgs to be used.
          */
-        public abstract Property<String[]> getScanArgs();
+        public abstract ListProperty<String> getScanArgs();
 
         /**
          * Returns the current buildTargers option.
@@ -41,7 +44,7 @@ public class JsonScanArtifactAppenderToBuildPlugin implements Plugin<Project> {
          * Executes the setter of the scan args config String array customizing the static classpath scan process.
          * @param action The actuall setter that will be executed.
          */
-        public void scanArgs(Action<Property<String[]>> action) {
+        public void scanArgs(Action<ListProperty<String>> action) {
             action.execute(getScanArgs());
         }
 
@@ -65,6 +68,18 @@ public class JsonScanArtifactAppenderToBuildPlugin implements Plugin<Project> {
         public int hashCode() {
             return Objects.hash(this.getScanArgs().getOrNull(), this.getBuildTargets().getOrNull(), getCleanProducedAssets().getOrNull());
         }
+
+        @Override
+        public boolean equals(final Object obj) {
+            if (this == obj) return true;
+            if (obj instanceof JsonScanArtifactAppenderToBuildPluginExtension) {
+                JsonScanArtifactAppenderToBuildPluginExtension that = (JsonScanArtifactAppenderToBuildPluginExtension) obj;
+                return Objects.equals(this.getScanArgs().getOrNull(), that.getScanArgs().getOrNull())
+                        && Objects.equals(this.getBuildTargets().getOrNull(), that.getBuildTargets().getOrNull())
+                        && Objects.equals(this.getCleanProducedAssets().getOrNull(), that.getCleanProducedAssets().getOrNull());
+            }
+            return false;
+        }
     }
 
     @Override
@@ -72,7 +87,7 @@ public class JsonScanArtifactAppenderToBuildPlugin implements Plugin<Project> {
         JsonScanArtifactAppenderToBuildPluginExtension options = project.getExtensions()
                 .create("tinidiStaticJsonScanForAndroid", JsonScanArtifactAppenderToBuildPluginExtension.class);
 
-        project.getPluginManager().withPlugin("com.android.application", appliedPlugin -> {
+        project.getPluginManager().withPlugin("com.android.application", appliedPlugin ->
 
             project.afterEvaluate(evaluatedProject -> {
 
@@ -90,9 +105,9 @@ public class JsonScanArtifactAppenderToBuildPlugin implements Plugin<Project> {
                     MergeSourceSetFolders mergeAssets = (MergeSourceSetFolders) evaluatedProject.getTasks().getByName(String.format("merge%sAssets", bt));
                     Task assemble = evaluatedProject.getTasks().getByName("assemble" + bt);
 
-                    compileJavaWithJavac.getInputs().property("tinydiCfgHash", optionsHashCode);
-                    mergeAssets.getInputs().property("tinydiCfgHash", optionsHashCode);
-                    assemble.getInputs().property("tinydiCfgHash", optionsHashCode);
+                    compileJavaWithJavac.getInputs().property(TINYDI_CFG_HASH, optionsHashCode);
+                    mergeAssets.getInputs().property(TINYDI_CFG_HASH, optionsHashCode);
+                    assemble.getInputs().property(TINYDI_CFG_HASH, optionsHashCode);
 
                     Boolean cleanProducedAssets = options.getCleanProducedAssets().getOrElse(Boolean.TRUE);
 
@@ -100,7 +115,7 @@ public class JsonScanArtifactAppenderToBuildPlugin implements Plugin<Project> {
                             new WriteTemporaryScanAsset(mergeAssets, options.getScanArgs().getOrNull(), cleanProducedAssets, assemble));
 
                 }
-            });
-        });
+            })
+        );
     }
 }

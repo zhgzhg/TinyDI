@@ -32,7 +32,7 @@ public class JsonScanArtifactAppenderToBuildPlugin implements Plugin<Project> {
          * Returns the current buildTargets option.
          * @return String array of buildTargets to be used.
          */
-        public abstract Property<String[]> getBuildTargets();
+        public abstract ListProperty<String> getBuildTargets();
 
         /**
          * Returns the current flag for the cleanProducedAssets option.
@@ -59,7 +59,7 @@ public class JsonScanArtifactAppenderToBuildPlugin implements Plugin<Project> {
          * Executes the setter of the build targets for which a scan will be run. Typically Debug, and Release.
          * @param action The actual setter that will be executed.
          */
-        public void buildTargets(Action<Property<String[]>> action) {
+        public void buildTargets(Action<ListProperty<String>> action) {
             action.execute(getBuildTargets());
         }
 
@@ -81,7 +81,8 @@ public class JsonScanArtifactAppenderToBuildPlugin implements Plugin<Project> {
 
         @Override
         public int hashCode() {
-            return Objects.hash(this.getScanArgs().getOrNull(), this.getBuildTargets().getOrNull(), getCleanProducedAssets().getOrNull());
+            return Objects.hash(this.getScanArgs().getOrNull(), this.getBuildTargets().getOrNull(),
+                    this.getCleanProducedAssets().getOrNull(), this.getRemoveClassPathInfo().getOrNull());
         }
 
         @Override
@@ -109,7 +110,7 @@ public class JsonScanArtifactAppenderToBuildPlugin implements Plugin<Project> {
 
                 String[] buildTargets;
                 if (options.getBuildTargets().isPresent()) {
-                    buildTargets = options.getBuildTargets().get();
+                    buildTargets = options.getBuildTargets().get().toArray(new String[0]);
                 } else {
                     buildTargets = new String[] { "Debug", "Release" };
                 }

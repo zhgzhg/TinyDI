@@ -678,9 +678,10 @@ public class TinyDI implements Runnable {
     }
 
     private List<MethodParameterInfo> obtainParameterInfoFromMethodInfo(MethodInfo methodInfo) {
-        return Arrays.stream(methodInfo.getParameterInfo())
+        return Collections.unmodifiableList(Arrays.stream(methodInfo.getParameterInfo())
                 .filter(paramInfo -> !paramInfo.getTypeDescriptor().toStringWithSimpleNames().equals(methodInfo.getClassName()))
-                .collect(Collectors.toUnmodifiableList());
+                .collect(Collectors.toList()));
+                //.collect(Collectors.toUnmodifiableList()); TODO use after the Android jdk desugaring officially supports it
     }
 
     @SuppressWarnings("unchecked")

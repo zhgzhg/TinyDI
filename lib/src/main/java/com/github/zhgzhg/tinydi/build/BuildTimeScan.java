@@ -5,6 +5,7 @@ import lombok.SneakyThrows;
 
 import java.io.File;
 import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -84,7 +85,7 @@ public class BuildTimeScan implements Consumer<String[]> {
                 .overrideClasspath(this.overridingClasspaths.toArray(new String[0]))
                 .configureForStaticScan();
 
-        try (PrintWriter writer = new PrintWriter(jsonFile)) {
+        try (PrintWriter writer = new PrintWriter(jsonFile, StandardCharsets.UTF_8)) {
             writer.print(json);
         }
     }

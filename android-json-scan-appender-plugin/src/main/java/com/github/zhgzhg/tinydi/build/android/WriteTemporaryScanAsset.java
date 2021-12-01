@@ -2,6 +2,7 @@ package com.github.zhgzhg.tinydi.build.android;
 
 import com.android.build.gradle.tasks.MergeSourceSetFolders;
 import com.github.zhgzhg.tinydi.build.BuildTimeScan;
+import com.github.zhgzhg.tinydi.meta.MetaBaseTinyDI;
 import lombok.RequiredArgsConstructor;
 import org.gradle.api.Action;
 import org.gradle.api.Task;
@@ -91,6 +92,8 @@ public class WriteTemporaryScanAsset implements Action<Task> {
         List<String> cliArgs = new LinkedList<>();
         cliArgs.add("-od" + assetDirectory.getAbsolutePath());
         cliArgs.add("-oc" + ((JavaCompile) task).getDestinationDirectory().get().getAsFile().getAbsolutePath());
+        cliArgs.add("-oc" + BuildTimeScan.class.getProtectionDomain().getCodeSource().getLocation().getPath());
+        cliArgs.add("-bp" + MetaBaseTinyDI.class.getPackageName());
         cliArgs.addAll(this.scanArgs);
 
         BuildTimeScan.main(cliArgs.toArray(new String[0]));

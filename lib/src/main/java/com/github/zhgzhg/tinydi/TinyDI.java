@@ -15,6 +15,7 @@ import io.github.classgraph.AnnotationParameterValueList;
 import io.github.classgraph.ArrayTypeSignature;
 import io.github.classgraph.BaseTypeSignature;
 import io.github.classgraph.ClassGraph;
+import io.github.classgraph.ClassGraphClassLoader;
 import io.github.classgraph.ClassInfo;
 import io.github.classgraph.ClassInfoList;
 import io.github.classgraph.ClassRefOrTypeVariableSignature;
@@ -32,6 +33,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.nio.charset.StandardCharsets;
@@ -354,7 +356,8 @@ public class TinyDI implements Runnable {
                 .rejectPackages(this.ignoredBasePackages.toArray(new String[0]))
                 .rejectClasses(this.ignoredClasses.toArray(new String[0]))
                 .acceptPackages(this.basePackages.toArray(new String[0]))
-                .enableAllInfo();
+                .enableAllInfo()
+                .addClassLoader(this.getClass().getClassLoader());
 
         if (!this.overridingClasspaths.isEmpty()) {
             classGraph = classGraph.overrideClasspath(overridingClasspaths);
@@ -374,6 +377,24 @@ public class TinyDI implements Runnable {
             }
         } else {
             try (ScanResult scanResult = ScanResult.fromJSON(this.staticClasspathScan)) {
+                Field classGraphClassLoaderField = scanResult.getClass().getDeclaredField("classGraphClassLoader");
+                if (classGraphClassLoaderField != null) {
+                    classGraphClassLoaderField.setAccessible(true);
+                    ClassGraphClassLoader classGraphClassLoader = (ClassGraphClassLoader) classGraphClassLoaderField.get(scanResult);
+                    Field environmentClassLoaderDelegationOrderField =
+                            classGraphClassLoader.getClass().getDeclaredField("environmentClassLoaderDelegationOrder");
+                    if (environmentClassLoaderDelegationOrderField != null) {
+                        environmentClassLoaderDelegationOrderField.setAccessible(true);
+                        Set<ClassLoader> envClassLoaders =
+                                (Set<ClassLoader>) environmentClassLoaderDelegationOrderField.get(classGraphClassLoader);
+                        if (envClassLoaders == null) {
+                            envClassLoaders = new LinkedHashSet<>();
+                            environmentClassLoaderDelegationOrderField.set(classGraphClassLoader, envClassLoaders);
+                        }
+                        envClassLoaders.add(this.getClass().getClassLoader());
+                    }
+                }
+
                 this.instantiateAllWithDI(scanResult, REGISTRAR_ANNOTATION_NAME, this::instantiateRecords);
                 this.instantiateAllWithDI(scanResult, SUPERVISED_ANNOTATION_NAME, (classInfo, instance) -> { });
             }
@@ -696,7 +717,7 @@ public class TinyDI implements Runnable {
     }
 
     /**
-     * Returns a Class instace, that's been loaded with this component's class loader.
+     * Returns a Class instance, that's been loaded with this component's class loader.
      * @param foreignClass The original Class instance to reload
      * @return A reloaded with the current class loader Class instance.
      */

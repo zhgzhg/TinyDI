@@ -19,7 +19,7 @@ public class JsonScanArtifactAppenderToBuildPlugin implements Plugin<Project> {
     static final String TINYDI_CFG_HASH = "tinydiCfgHash";
 
     /**
-     * Android JSON Scan Appender's Plugin configuration holder.
+     * Android JSON Scan Appender Plugin configuration holder.
      */
     public abstract static class JsonScanArtifactAppenderToBuildPluginExtension {
         /**
@@ -29,7 +29,7 @@ public class JsonScanArtifactAppenderToBuildPlugin implements Plugin<Project> {
         public abstract ListProperty<String> getScanArgs();
 
         /**
-         * Returns the current buildTargers option.
+         * Returns the current buildTargets option.
          * @return String array of buildTargets to be used.
          */
         public abstract Property<String[]> getBuildTargets();
@@ -41,8 +41,15 @@ public class JsonScanArtifactAppenderToBuildPlugin implements Plugin<Project> {
         public abstract Property<Boolean> getCleanProducedAssets();
 
         /**
+         * Returns the current flag for the removeClassPathInfo option.
+         * @return Boolean value indicating whether the class path info shall be cleaned from the serialized scan.
+         *         Usually that's preferred by default.
+         */
+        public abstract Property<Boolean> getRemoveClassPathInfo();
+
+        /**
          * Executes the setter of the scan args config String array customizing the static classpath scan process.
-         * @param action The actuall setter that will be executed.
+         * @param action The actual setter that will be executed.
          */
         public void scanArgs(Action<ListProperty<String>> action) {
             action.execute(getScanArgs());
@@ -50,7 +57,7 @@ public class JsonScanArtifactAppenderToBuildPlugin implements Plugin<Project> {
 
         /**
          * Executes the setter of the build targets for which a scan will be run. Typically Debug, and Release.
-         * @param action The actuall setter that will be executed.
+         * @param action The actual setter that will be executed.
          */
         public void buildTargets(Action<Property<String[]>> action) {
             action.execute(getBuildTargets());
@@ -58,10 +65,18 @@ public class JsonScanArtifactAppenderToBuildPlugin implements Plugin<Project> {
 
         /**
          * Executes the setter of the flag indicating whether to automatically clean the produced assets when the compilation process is finished.
-         * @param action The actuall setter that will be executed.
+         * @param action The actual setter that will be executed.
          */
         public void cleanProducedAssets(Action<Property<Boolean>> action) {
             action.execute(getCleanProducedAssets());
+        }
+
+        /**
+         * Executes the setter of the flag indicating whether to remove the class path data from the serialized static DI scan result.
+         * @param action The actual setter that will be executed.
+         */
+        public void removeClassPathInfo(Action<Property<Boolean>> action) {
+            action.execute(getRemoveClassPathInfo());
         }
 
         @Override
@@ -76,7 +91,8 @@ public class JsonScanArtifactAppenderToBuildPlugin implements Plugin<Project> {
                 JsonScanArtifactAppenderToBuildPluginExtension that = (JsonScanArtifactAppenderToBuildPluginExtension) obj;
                 return Objects.equals(this.getScanArgs().getOrNull(), that.getScanArgs().getOrNull())
                         && Objects.equals(this.getBuildTargets().getOrNull(), that.getBuildTargets().getOrNull())
-                        && Objects.equals(this.getCleanProducedAssets().getOrNull(), that.getCleanProducedAssets().getOrNull());
+                        && Objects.equals(this.getCleanProducedAssets().getOrNull(), that.getCleanProducedAssets().getOrNull())
+                        && Objects.equals(this.getRemoveClassPathInfo().getOrNull(), that.getRemoveClassPathInfo().getOrNull());
             }
             return false;
         }
@@ -110,10 +126,12 @@ public class JsonScanArtifactAppenderToBuildPlugin implements Plugin<Project> {
                     assemble.getInputs().property(TINYDI_CFG_HASH, optionsHashCode);
 
                     Boolean cleanProducedAssets = options.getCleanProducedAssets().getOrElse(Boolean.TRUE);
+                    Boolean removeClassPathDataFromJSON = options.getRemoveClassPathInfo().getOrElse(Boolean.TRUE);
 
                     compileJavaWithJavac.doLast("Generate TinyDI's Static JSON Scan Temporary Asset - " + bt,
-                            new WriteTemporaryScanAsset(mergeAssets, options.getScanArgs().getOrNull(), cleanProducedAssets, assemble));
-
+                            new WriteTemporaryScanAsset(mergeAssets, options.getScanArgs().getOrNull(), cleanProducedAssets,
+                                    removeClassPathDataFromJSON, assemble)
+                    );
                 }
             })
         );

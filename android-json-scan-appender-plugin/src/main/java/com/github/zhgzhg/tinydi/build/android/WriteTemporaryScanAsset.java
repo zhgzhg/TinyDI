@@ -3,15 +3,22 @@ package com.github.zhgzhg.tinydi.build.android;
 import com.android.build.gradle.tasks.MergeSourceSetFolders;
 import com.github.zhgzhg.tinydi.build.BuildTimeScan;
 import com.github.zhgzhg.tinydi.meta.MetaBaseTinyDI;
+import groovy.json.JsonOutput;
+import groovy.json.JsonSlurper;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.gradle.api.Action;
 import org.gradle.api.Task;
 import org.gradle.api.tasks.compile.JavaCompile;
 
 import java.io.File;
+import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -23,6 +30,7 @@ public class WriteTemporaryScanAsset implements Action<Task> {
     private final MergeSourceSetFolders mergeSourceSetFolders;
     private final List<String> scanArgs;
     private final boolean cleanProducedAssets;
+    private final boolean removeClassPathDataFromJSON;
     private final Task latePostexecTaskToHookAfter;
 
     private String computeScanFileName(List<String> args) {
@@ -63,6 +71,28 @@ public class WriteTemporaryScanAsset implements Action<Task> {
         return prevDir;
     }
 
+    @SneakyThrows
+    private void removeClassPathDataFromJSONFile(File jsonFile) {
+        if (!jsonFile.exists()) return;
+
+        JsonSlurper slurper = new JsonSlurper();
+
+        Map<String, Object> parsed = (Map<String, Object>) slurper.parse(jsonFile, StandardCharsets.UTF_8.name());
+        parsed.remove("classpath");
+        parsed.put("classpath", Collections.emptyList());
+
+        Map<String, Object> scanSpec = (Map<String, Object>) parsed.get("scanSpec");
+        if (scanSpec != null) {
+            scanSpec.remove("overrideClasspath");
+            scanSpec.put("overrideClasspath", Collections.emptyList());
+        }
+
+        String jsonResult = JsonOutput.toJson(parsed);
+        try (PrintWriter pr = new PrintWriter(jsonFile, StandardCharsets.UTF_8)) {
+            pr.println(jsonResult);
+        }
+    }
+
     @Override
     public void execute(Task task) {
         System.out.println("Generating static classpath scan as a temporary JSON file asset...");
@@ -97,5 +127,9 @@ public class WriteTemporaryScanAsset implements Action<Task> {
         cliArgs.addAll(this.scanArgs);
 
         BuildTimeScan.main(cliArgs.toArray(new String[0]));
+
+        if (removeClassPathDataFromJSON) {
+            this.removeClassPathDataFromJSONFile(staticScanLocation);
+        }
     }
 }

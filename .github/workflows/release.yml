@@ -69,7 +69,7 @@ jobs:
           prerelease: false
 
       - name: Upload Documentation
-        uses: JamesIves/github-pages-deploy-action@4.1.4
+        uses: JamesIves/github-pages-deploy-action@4.1.7
         with:
           branch: gh-pages
           folder: 'build/docs/javadoc'

@@ -34,9 +34,9 @@ public class BuildTimeScan implements Consumer<String[]> {
         System.out.println("Build Time Scanner - a DI helper utility");
         System.out.println();
         System.out.println("Format:");
-        System.out.println("  -od<output_directory> -bp<fqdn_base_package>");
+        System.out.println("  -od<output_directory> -bp<fqdn_base_package>...");
         System.out.println("  [-oc<overriding_fqdn_classpath>]...");
-        System.out.println("  [-ibp<fqdn_base_package_to_ignore>] [-ic<fqdn_class_to_ignore>]");
+        System.out.println("  [-ibp<fqdn_base_package_to_ignore>]... [-ic<fqdn_class_to_ignore>]...");
         System.out.println("  [-of<output_file_name>]");
         System.out.println();
         System.out.println("The parameter values must follow without spaces. Any parameter may be repeated more than once.");

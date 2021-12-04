@@ -34,7 +34,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
       - name: Build with Gradle
-        run: ./gradlew build publishTinyDIPublicationToGitHubPackagesRepository publishAndroidJsonScanAppenderPluginPublicationToGitHubPackagesRepository
+        run: ./gradlew build publishTinyDIPublicationToGitHubPackagesRepository publishAdroidJsonScanAppenderPluginPublicationToGitHubPackagesRepository
         env:
           USERNAME: ${{ github.actor }}
           TOKEN: ${{ secrets.GITHUB_TOKEN }}

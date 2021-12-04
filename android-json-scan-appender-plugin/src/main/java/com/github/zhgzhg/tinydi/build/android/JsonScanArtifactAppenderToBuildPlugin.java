@@ -5,10 +5,13 @@ import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
+import org.gradle.api.internal.TaskOutputsInternal;
 import org.gradle.api.provider.ListProperty;
 import org.gradle.api.provider.Property;
 import org.gradle.api.tasks.compile.JavaCompile;
 
+import java.io.File;
+import java.util.Arrays;
 import java.util.Objects;
 
 /**
@@ -108,12 +111,8 @@ public class JsonScanArtifactAppenderToBuildPlugin implements Plugin<Project> {
 
             project.afterEvaluate(evaluatedProject -> {
 
-                String[] buildTargets;
-                if (options.getBuildTargets().isPresent()) {
-                    buildTargets = options.getBuildTargets().get().toArray(new String[0]);
-                } else {
-                    buildTargets = new String[] { "Debug", "Release" };
-                }
+                options.getBuildTargets().convention(Arrays.asList("Debug", "Release"));
+                String[] buildTargets = options.getBuildTargets().get().toArray(new String[0]);
 
                 int optionsHashCode = options.hashCode();
 
@@ -128,6 +127,15 @@ public class JsonScanArtifactAppenderToBuildPlugin implements Plugin<Project> {
 
                     Boolean cleanProducedAssets = options.getCleanProducedAssets().getOrElse(Boolean.TRUE);
                     Boolean removeClassPathDataFromJSON = options.getRemoveClassPathInfo().getOrElse(Boolean.TRUE);
+
+                    // add the produced json scan asset as an explicit output so regen can be triggered
+                    // even when the file has been removed automatically
+                    if (options.getCleanProducedAssets().getOrElse(Boolean.TRUE)) {
+                        TaskOutputsInternal compilationOutputs = compileJavaWithJavac.getOutputs();
+                        String producedScanFileName = WriteTemporaryScanAsset.computeScanFileName(options.getScanArgs().getOrNull());
+                        compilationOutputs.file(
+                                new File(mergeAssets.getSourceFolderInputs().getFiles().iterator().next(), producedScanFileName));
+                    }
 
                     compileJavaWithJavac.doLast("Generate TinyDI's Static JSON Scan Temporary Asset - " + bt,
                             new WriteTemporaryScanAsset(mergeAssets, options.getScanArgs().getOrNull(), cleanProducedAssets,

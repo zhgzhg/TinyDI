@@ -33,7 +33,7 @@ public class WriteTemporaryScanAsset implements Action<Task> {
     private final boolean removeClassPathDataFromJSON;
     private final Task latePostexecTaskToHookAfter;
 
-    private String computeScanFileName(List<String> args) {
+    public static String computeScanFileName(List<String> args) {
         String outputFile = "tinydi-scanresult.json";
         if (args == null || args.isEmpty()) {
             return outputFile;

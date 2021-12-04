@@ -1,2 +1,2 @@
 /** Build-time helper utilities. */
-package tinydi.build;
+package com.github.zhgzhg.tinydi.build;

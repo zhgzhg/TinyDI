@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","url":"allpackages-index.html"},{"l":"com.github.zhgzhg.tinydi"},{"l":"com.github.zhgzhg.tinydi.build"},{"l":"com.github.zhgzhg.tinydi.components"},{"l":"com.github.zhgzhg.tinydi.dynamic"},{"l":"com.github.zhgzhg.tinydi.meta"},{"l":"com.github.zhgzhg.tinydi.meta.annotations"},{"l":"com.github.zhgzhg.tinydi.meta.enums"}]

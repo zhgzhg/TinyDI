@@ -1,10 +1,9 @@
-group 'com.github.zhgzhg.tinydi'
-version '0.2.0'
-
-repositories {
-    mavenCentral()
-    mavenLocal()
+plugins {
+    id 'maven-publish'
 }
+
+group 'com.github.zhgzhg.tinydi'
+version '0.2.1'
 
 allprojects {
     tasks.withType(JavaCompile) {
@@ -14,6 +13,21 @@ allprojects {
     gradle.projectsEvaluated {
         tasks.withType(JavaCompile) {
             options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+        }
+    }
+}
+
+subprojects {
+    publishing {
+        repositories {
+            maven {
+                name = "GitHubPackages"
+                url = uri("https://maven.pkg.github.com/zhgzhg/TinyDI")
+                credentials {
+                    username = project.findProperty("gpr.user") ?: System.getenv("USERNAME")
+                    password = project.findProperty("gpr.key") ?: System.getenv("TOKEN")
+                }
+            }
         }
     }
 }

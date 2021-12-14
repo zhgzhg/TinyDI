@@ -10,5 +10,10 @@ dependencyResolutionManagement {
             alias('lombok').to('org.projectlombok:lombok:1.18.22')
         }
     }
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        google()
+    }
 }
 

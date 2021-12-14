@@ -7,20 +7,15 @@ plugins {
 group rootProject.group
 version rootProject.version
 
-repositories {
-    mavenCentral()
-    mavenLocal()
-}
-
 dependencies {
     compileOnly libs.lombok
     annotationProcessor libs.lombok
     testCompileOnly libs.lombok
     testAnnotationProcessor libs.lombok
 
-    implementation 'io.github.classgraph:classgraph:4.8.137'
+    implementation 'io.github.classgraph:classgraph:4.8.138'
 
-    testImplementation(platform('org.junit:junit-bom:5.8.1'))
+    testImplementation(platform('org.junit:junit-bom:5.8.2'))
     testImplementation('org.junit.jupiter:junit-jupiter')
 }
 
@@ -67,17 +62,6 @@ javadoc {
 }
 
 publishing {
-    repositories {
-        maven {
-            name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/zhgzhg/TinyDI")
-            credentials {
-                username = project.findProperty("gpr.user") ?: System.getenv("USERNAME")
-                password = project.findProperty("gpr.key") ?: System.getenv("TOKEN")
-            }
-        }
-    }
-
     publications {
         TinyDI(MavenPublication) {
             from(components.java)

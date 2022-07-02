@@ -13,7 +13,7 @@ dependencies {
     testCompileOnly libs.lombok
     testAnnotationProcessor libs.lombok
 
-    implementation 'io.github.classgraph:classgraph:4.8.138'
+    implementation 'io.github.classgraph:classgraph:4.8.147'
 
     testImplementation(platform('org.junit:junit-bom:5.8.2'))
     testImplementation('org.junit.jupiter:junit-jupiter')

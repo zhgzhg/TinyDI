@@ -7,7 +7,7 @@ enableFeaturePreview('VERSION_CATALOGS')
 dependencyResolutionManagement {
     versionCatalogs {
         libs {
-            alias('lombok').to('org.projectlombok:lombok:1.18.22')
+            alias('lombok').to('org.projectlombok:lombok:1.18.24')
         }
     }
     repositories {

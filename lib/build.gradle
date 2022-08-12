@@ -13,9 +13,9 @@ dependencies {
     testCompileOnly libs.lombok
     testAnnotationProcessor libs.lombok
 
-    implementation 'io.github.classgraph:classgraph:4.8.147'
+    implementation 'io.github.classgraph:classgraph:4.8.149'
 
-    testImplementation(platform('org.junit:junit-bom:5.8.2'))
+    testImplementation(platform('org.junit:junit-bom:5.9.0'))
     testImplementation('org.junit.jupiter:junit-jupiter')
 }
 
@@ -37,7 +37,7 @@ jacocoTestReport {
 }
 
 jacoco {
-    toolVersion = "0.8.7"
+    toolVersion = "0.8.8"
 }
 
 tasks.named('jar') {

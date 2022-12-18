@@ -250,7 +250,7 @@ public class TinyDI implements Runnable {
 
         /**
          * Activates more aggressive encapsulation circumventing for Java version 16 or later. The hack relies on additional library which
-         * must be manually added as a dependency - the @see <a href="https://github.com/toolfactory/narcissus">Narcissus</a>.
+         * must be manually added as a dependency - the see <a href="https://github.com/toolfactory/narcissus">Narcissus</a>.
          * @param useEncapsulationCircumventing Set to true to activate the aggressive hack, and use false to deactivate it
          * @return The belonging instance for fluent config.
          * @throws IllegalArgumentException If {@link #configure()} has been called previously.

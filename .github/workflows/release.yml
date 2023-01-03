@@ -48,7 +48,7 @@ jobs:
         run: gh release create "Tiny DI ${{ github.ref_name }}" --generate-notes
 
       - name: Upload Documentation
-        uses: JamesIves/github-pages-deploy-action@4.4.1
+        uses: JamesIves/github-pages-deploy-action@4
         with:
           branch: gh-pages
           folder: 'lib/build/docs/javadoc'

@@ -34,7 +34,7 @@ tasks.named('jar') {
         attributes(
                 'Implementation-Title': project.group + '.' + project.name,
                 'Implementation-Version': project.version,
-                'Automatic-Module-Name': project.group + '.' + project.name
+                'Automatic-Module-Name': project.group + '.' + project.name.replace('-', '_')
         )
     }
 }

@@ -44,8 +44,7 @@ tasks.named('jar') {
     manifest {
         attributes(
                 'Implementation-Title': project.group + '.' + project.name,
-                'Implementation-Version': project.version,
-                'Automatic-Module-Name': project.group + '.' + project.name
+                'Implementation-Version': project.version
         )
     }
 }

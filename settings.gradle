@@ -3,11 +3,10 @@ include ('lib', 'android-json-scan-appender-plugin')
 
 project(':lib').name = 'tinydi'
 
-enableFeaturePreview('VERSION_CATALOGS')
 dependencyResolutionManagement {
     versionCatalogs {
         libs {
-            library('lombok', 'org.projectlombok:lombok:1.18.24')
+            library('lombok', 'org.projectlombok:lombok:1.18.26')
         }
     }
     repositories {

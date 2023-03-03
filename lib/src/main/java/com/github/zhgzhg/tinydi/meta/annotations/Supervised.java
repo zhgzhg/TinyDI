@@ -16,7 +16,7 @@ import java.lang.annotation.Target;
 @Documented
 public @interface Supervised {
     /**
-     * The name the annotated component which will registered with. If it's not specified the simple class name will be used instead.
+     * The name the annotated component which will be registered with. If it's not specified the simple class name will be used instead.
      * @return Nonnull string with the component's name, or a blank one.
      */
     String value() default "";

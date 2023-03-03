@@ -249,8 +249,9 @@ public class TinyDI implements Runnable {
         }
 
         /**
-         * Activates more aggressive encapsulation circumventing for Java version 16 or later. The hack relies on additional library which
-         * must be manually added as a dependency - the see <a href="https://github.com/toolfactory/narcissus">Narcissus</a>.
+         * Activates more aggressive encapsulation circumventing for Java version 16 or later. The hack relies on additional libraries which
+         * must be manually added as a dependency - either <a href="https://github.com/toolfactory/narcissus">Narcissus</a> or
+         * <a href="https://github.com/toolfactory/jvm-driver">ToolFactory JVM Driver</a>.
          * @param useEncapsulationCircumventing Set to true to activate the aggressive hack, and use false to deactivate it
          * @return The belonging instance for fluent config.
          * @throws IllegalArgumentException If {@link #configure()} has been called previously.
@@ -345,7 +346,7 @@ public class TinyDI implements Runnable {
                     Class.forName("io.github.toolfactory.jvm.Driver", false, this.getClass().getClassLoader());
                     ClassGraph.CIRCUMVENT_ENCAPSULATION = ClassGraph.CircumventEncapsulationMethod.JVM_DRIVER;
                 } catch (ClassNotFoundException jvmDriverMissing) {
-                    throw new IllegalStateException("Aggressive encapsulation circumventing is not possible, becase neither Narcissus nor JVM Driver libraries have been found on the classpath");
+                    throw new IllegalStateException("Aggressive encapsulation circumventing is not possible, because neither Narcissus nor JVM Driver libraries have been found on the classpath");
                 }
             }
         } else {
@@ -378,22 +379,17 @@ public class TinyDI implements Runnable {
         } else {
             try (ScanResult scanResult = ScanResult.fromJSON(this.staticClasspathScan)) {
                 Field classGraphClassLoaderField = scanResult.getClass().getDeclaredField("classGraphClassLoader");
-                if (classGraphClassLoaderField != null) {
-                    classGraphClassLoaderField.setAccessible(true);
-                    ClassGraphClassLoader classGraphClassLoader = (ClassGraphClassLoader) classGraphClassLoaderField.get(scanResult);
-                    Field environmentClassLoaderDelegationOrderField =
-                            classGraphClassLoader.getClass().getDeclaredField("environmentClassLoaderDelegationOrder");
-                    if (environmentClassLoaderDelegationOrderField != null) {
-                        environmentClassLoaderDelegationOrderField.setAccessible(true);
-                        Set<ClassLoader> envClassLoaders =
-                                (Set<ClassLoader>) environmentClassLoaderDelegationOrderField.get(classGraphClassLoader);
-                        if (envClassLoaders == null) {
-                            envClassLoaders = new LinkedHashSet<>();
-                            environmentClassLoaderDelegationOrderField.set(classGraphClassLoader, envClassLoaders);
-                        }
-                        envClassLoaders.add(this.getClass().getClassLoader());
-                    }
+                classGraphClassLoaderField.setAccessible(true);
+                ClassGraphClassLoader classGraphClassLoader = (ClassGraphClassLoader) classGraphClassLoaderField.get(scanResult);
+                Field environmentClassLoaderDelegationOrderField =
+                        classGraphClassLoader.getClass().getDeclaredField("environmentClassLoaderDelegationOrder");
+                environmentClassLoaderDelegationOrderField.setAccessible(true);
+                Set<ClassLoader> envClassLoaders = (Set<ClassLoader>) environmentClassLoaderDelegationOrderField.get(classGraphClassLoader);
+                if (envClassLoaders == null) {
+                    envClassLoaders = new LinkedHashSet<>();
+                    environmentClassLoaderDelegationOrderField.set(classGraphClassLoader, envClassLoaders);
                 }
+                envClassLoaders.add(this.getClass().getClassLoader());
 
                 this.instantiateAllWithDI(scanResult, REGISTRAR_ANNOTATION_NAME, this::instantiateRecords);
                 this.instantiateAllWithDI(scanResult, SUPERVISED_ANNOTATION_NAME, (classInfo, instance) -> { });

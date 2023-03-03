@@ -13,7 +13,7 @@ import java.util.function.Consumer;
 /**
  * CLI utility which may be executed during build time to produce JSON file with classpath scan information.
  * Useful for platforms with limited reflection capabilities (Android, GraalVM native images, etc.).
- * To see the supported parameters execute it without any or only with '-h' parameter.
+ * To see the supported parameters execute it without any arguments, or only with '-h' parameter.
  */
 public class BuildTimeScan implements Consumer<String[]> {
 
@@ -66,7 +66,7 @@ public class BuildTimeScan implements Consumer<String[]> {
         }
 
         if ((outDir == null || outDir.isBlank()) && (basePackages.isEmpty())) {
-            throw new RuntimeException("Output directory and base package name is needed at least");
+            throw new RuntimeException("Output directory and base package name are needed at least");
         }
     }
 

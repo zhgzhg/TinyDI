@@ -12,7 +12,7 @@ Features
  * Constructor-based dependency injection
  * Singleton, and prototype DI scopes
  * Bean akin components which can register, or be injected with components
- * Automatic classpath scanning of the eligible for DI components
+ * Ability to do classpath scanning of the eligible for DI components
  * Support for programmatic registration of additional components
  * Runtime or build time component scanning, allowing DI on platforms with limited reflection capabilities (Android, GraalVM native images, etc.)
  * Simple to learn and use
@@ -107,13 +107,10 @@ Limitations
   * You may use Lombok to reduce the boilerplate code 
 * Primitive types are always converted to their wrappers (for e.g. int -> Integer, long -> Long, etc...)
 * Nulls are not considered as valid dependency injection values
-* Android and GraalVM native images require serialization of component scanning to be saved at build time 
+* Android, and GraalVM native images require serialization of the component scanning to be saved at build time 
 
 Further Reading
 ---------------
 
 Consult with the [wiki](https://github.com/zhgzhg/TinyDI/wiki) and the [API documentation](https://zhgzhg.github.io/TinyDI/)
 for more information.
-
-    
-

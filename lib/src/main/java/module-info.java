@@ -9,5 +9,5 @@ open module com.github.zhgzhg.tinydi.tinydi {
 
     requires java.base;
     requires static lombok;
-    requires transitive io.github.classgraph;
+    requires io.github.classgraph;
 }

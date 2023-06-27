@@ -89,13 +89,16 @@ public class TinyDynamicDI {
      * @throws ClassCastException if the proxy object's handler is not of {@link TransparentInvocationHandler} type.
      */
     public static Class<?> realClass(@NonNull Object instance) {
-        if (Proxy.isProxyClass(instance.getClass())
+        Class<?> clazz = instance.getClass();
+
+        while (clazz != null && Proxy.isProxyClass(clazz)
                 && Proxy.getInvocationHandler(instance).getClass().isAssignableFrom(TransparentInvocationHandler.class)) {
 
-            return ((TransparentInvocationHandler) Proxy.getInvocationHandler(instance)).instanceClass;
+            instance = Proxy.getInvocationHandler(instance);
+            clazz = ((TransparentInvocationHandler) instance).instanceClass;
         }
 
-        return instance.getClass();
+        return clazz;
     }
 
     /**
@@ -105,10 +108,10 @@ public class TinyDynamicDI {
      * @throws ClassCastException if the proxy object's handler is not of {@link TransparentInvocationHandler} type.
      */
     public static Object realInstance(Object instance) {
-        if (instance != null && Proxy.isProxyClass(instance.getClass())
+        while (instance != null && Proxy.isProxyClass(instance.getClass())
                 && Proxy.getInvocationHandler(instance).getClass().isAssignableFrom(TransparentInvocationHandler.class)) {
 
-            return ((TransparentInvocationHandler) Proxy.getInvocationHandler(instance)).supplyInstance();
+            instance = ((TransparentInvocationHandler) Proxy.getInvocationHandler(instance)).supplyInstance();
         }
         return instance;
     }

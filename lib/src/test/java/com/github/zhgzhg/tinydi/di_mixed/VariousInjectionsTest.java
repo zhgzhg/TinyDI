@@ -30,5 +30,6 @@ class VariousInjectionsTest {
                 .configure();
 
         Assertions.assertDoesNotThrow(() -> tinyDI.run());
+        Assertions.assertNull(tinyDI.componentFor("nullValuesAreNotRegisteredAndNotErroredImmediately"));
     }
 }

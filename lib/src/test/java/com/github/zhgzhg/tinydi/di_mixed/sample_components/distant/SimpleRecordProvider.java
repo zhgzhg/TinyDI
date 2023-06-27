@@ -13,4 +13,9 @@ public class SimpleRecordProvider {
         --i;
         return i;
     }
+
+    @Recorded(value = "nullValuesAreNotRegisteredAndNotErroredImmediately")
+    public Short missigShort() {
+        return null;
+    }
 }

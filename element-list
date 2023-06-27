@@ -1,0 +1,8 @@
+module:com.github.zhgzhg.tinydi.tinydi
+com.github.zhgzhg.tinydi
+com.github.zhgzhg.tinydi.build
+com.github.zhgzhg.tinydi.components
+com.github.zhgzhg.tinydi.dynamic
+com.github.zhgzhg.tinydi.meta
+com.github.zhgzhg.tinydi.meta.annotations
+com.github.zhgzhg.tinydi.meta.enums

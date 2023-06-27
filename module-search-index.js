@@ -1,0 +1,1 @@
+moduleSearchIndex = [{"l":"com.github.zhgzhg.tinydi.tinydi"}]

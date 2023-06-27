@@ -702,7 +702,7 @@ public class TinyDI implements Runnable {
     }
 
     /**
-     * Returns a Method instace, that's been loaded with this component's class loader.
+     * Returns a Method instance, that's been loaded with this component's class loader.
      * @param method The original Method instance to reload
      * @return A reloaded with the current class loader Method instance.
      */
@@ -889,7 +889,7 @@ public class TinyDI implements Runnable {
     }
 
     /**
-     * Returns the instantiation strategy used by TinyDI to create an instance a the particular object.
+     * Returns the instantiation strategy used by TinyDI to create an instance of a particular object.
      * @param instance The object to check.
      * @return Any member of {@link ScopeDI} or null if the strategy cannot be determined.
      */

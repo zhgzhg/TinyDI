@@ -106,8 +106,8 @@ Limitations
 * Only dependency injection via constructor is supported
   * You may use Lombok to reduce the boilerplate code 
 * Primitive types are always converted to their wrappers (for e.g. int -> Integer, long -> Long, etc...)
-* Nulls are not considered as valid dependency injection values
-* Android, and GraalVM native images require serialization of the component scanning to be saved at build time 
+* Nulls are not considered valid dependency injection values and will be ignored by the library
+* Android and GraalVM native images require serialization of the component scanning to be saved at build time 
 
 Further Reading
 ---------------

@@ -6,7 +6,7 @@ project(':lib').name = 'tinydi'
 dependencyResolutionManagement {
     versionCatalogs {
         libs {
-            library('lombok', 'org.projectlombok:lombok:1.18.26')
+            library('lombok', 'org.projectlombok:lombok:1.18.28')
         }
     }
     repositories {
